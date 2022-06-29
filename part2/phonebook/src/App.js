@@ -4,7 +4,7 @@ import { useState } from 'react'
 
 const FindMatches = ({persons,newSearch}) => {
   const searchMatches = persons.filter( function(person) {
-    return person.name.includes(newSearch)})
+    return person.name.toLowerCase().includes(newSearch.toLowerCase())})
     return(
     searchMatches.map(person => <p key={person.id}> {person.name} {person.number} </p>)
     )
