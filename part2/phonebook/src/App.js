@@ -1,8 +1,30 @@
 import { useState } from 'react'
 
+const Filter = ({newSearch,handleSearchChange}) => {
+  return (
+    <div>
+    filter shown with: <input value={newSearch} onChange={handleSearchChange}/>
+    </div>
+  )
+}
 
+const PersonForm = ({addPerson,newName,handleNameChange,newNumber,handleNumberChange}) => {
+  return (
+    <form onSubmit={addPerson}>
+    <div>
+      name: <input value={newName} onChange={handleNameChange}/>
+    </div>
+    <div>
+      number: <input value={newNumber} onChange={handleNumberChange} />
+    </div>
+    <div>
+      <button type="submit">add</button>
+    </div>
+  </form>
+  )
+}
 
-const FindMatches = ({persons,newSearch}) => {
+const Persons = ({persons,newSearch}) => {
   const searchMatches = persons.filter( function(person) {
     return person.name.toLowerCase().includes(newSearch.toLowerCase())})
     return(
@@ -57,23 +79,16 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>
-          filter shown with: <input value={newSearch} onChange={handleSearchChange}/>
-        </div>
+
+      < Filter newSearch={newSearch} handleSearchChange={handleSearchChange}/>
       <h2>add a new</h2>
-      <form onSubmit={addPerson}>
-        <div>
-          name: <input value={newName} onChange={handleNameChange}/>
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={handleNumberChange} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+
+
+      <PersonForm addPerson={addPerson} newName={newName} handleNameChange={handleNameChange}
+      newNumber={newNumber} handleNumberChange={handleNumberChange} />
+
       <h2>Numbers</h2>
-      < FindMatches persons={persons} newSearch={newSearch} />
+      < Persons persons={persons} newSearch={newSearch} />
     </div>
   )
 }
