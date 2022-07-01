@@ -38,10 +38,10 @@ const DisplayCountrywithButton = ({matchingCountries,handleButtonPress,extraInfo
     <tr>
       <td><p key={country.name.common}>{country.name.common}</p></td>
       
-     <td> <button onClick={(event) =>handleButtonPress(event,country)}>show</button></td>
+     <td> <button onClick={(event) =>handleButtonPress(event,country,extraInfo)}>show</button></td>
     </tr>
   </table>
-  {extraInfo[country.name.common] ? < DisplayDetails match={country}/>:""}
+  {extraInfo[country.name.common]===true ? < DisplayDetails match={country}/>:""}
 
   {console.log(extraInfo)}
     </div>
@@ -96,11 +96,20 @@ const App = () => {
     console.log('event target',event.target)
     const country_name=country.name.common
     console.log('country',country_name)
+    if (Object.keys(extraInfo).includes(country_name)){
+      if (extraInfo[country_name]){
+        setExtraInfo({...extraInfo,[country_name]:false})
+      }else{
+        setExtraInfo({...extraInfo, [country_name]: true})
+      }
+    }else{
+      setExtraInfo({...extraInfo, [country_name]: true})
+    }
     
-
-    setExtraInfo({...extraInfo, [country_name]: true})
+    console.log(extraInfo)
+    // setExtraInfo({...extraInfo, [country_name]: true})
     
-    console.log('button pressed')
+    
     console.log('extrainfo', extraInfo)
 
     
