@@ -20,6 +20,7 @@ const DisplayDetails = ({match,REACT_APP_API_KEY}) => {
   // console.log('weather:',cityWeather.data.current.temperature)
 
   const weatherApi=`http://api.weatherstack.com/current?access_key=${REACT_APP_API_KEY}&query=${city}`
+  console.log('link ',weatherApi)
   const weather_hook = (weatherApi) => {
     axios
       .get(weatherApi)
@@ -93,7 +94,7 @@ const DisplayMatches = ({countryData,newSearchCountry,handleButtonPress,extraInf
   }else if (matchingNames.length==1){
     const match = matchingCountries[0]
     return(
-    <DisplayDetails match={match}/>
+    <DisplayDetails match={match} REACT_APP_API_KEY={REACT_APP_API_KEY}/>
     )
   }
   } 
