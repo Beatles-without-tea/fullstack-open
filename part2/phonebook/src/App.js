@@ -39,7 +39,7 @@ const App = () => {
   const hook = () => {
     console.log('effect')
     axios
-      .get('http://localhost:3001/persons')
+      .get('http://localhost:3000/persons')
       .then(response => {
         console.log('promise fulfilled')
         setPersons(response.data)
@@ -64,6 +64,12 @@ const App = () => {
       number: newNumber,
       id : persons.map(person => person.id)[persons.length-1]+1
     }
+
+    axios
+    .post('http://localhost:3000/persons', nameObject)
+    .then(response => {
+      console.log(response)
+    })
     
     setPersons(persons.concat(nameObject))
     setNewName('')
