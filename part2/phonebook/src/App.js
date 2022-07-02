@@ -10,6 +10,28 @@ const Filter = ({newSearch,handleSearchChange}) => {
   )
 }
 
+const Notification = ({ message }) => {
+  const notificationStyle = {
+    color: 'green',
+    background: 'lightgrey',
+    fontSize: 20,
+    borderStyle: 'solid',
+    borderSadius: 5,
+    padding: 10,
+    marginBottom: 10
+  }
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div style={notificationStyle} className='success'>
+      {message}
+    </div>
+  )
+}
+
+
 const PersonForm = ({addPerson,newName,handleNameChange,newNumber,handleNumberChange}) => {
   return (
     <form onSubmit={addPerson}>
@@ -45,7 +67,7 @@ const Persons = ({persons,newSearch,deleteContact}) => {
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
-  
+  const [successMessage, setSuccessMessage] = useState(null)
 
   const hook = () => {
     console.log('effect')
@@ -63,7 +85,7 @@ const App = () => {
     if (window.confirm(`Delete ${person_name}`)) {
       console.log('object with id ' + id +'has been deleted' )
       personService.deleteObject(id).then(response =>
-        setPersons(persons.filter(person => person.id != id))
+        setPersons(persons.filter(person => person.id !== id))
       ).catch(error => {
         console.log('failure')
       })
@@ -92,13 +114,14 @@ const App = () => {
           id : personId
         }
     
-        personService.update(personId,nameObject)
-        .then(response => {
-          console.log(response)
-        })
+        personService.update(personId,nameObject).then( setSuccessMessage(`Added ${newName}`) ,
+        setTimeout(() => {
+          setSuccessMessage(null)
+        }, 5000))
+        
         
      
-        setPersons(persons.filter(peep => peep.id!= personId).concat(nameObject))
+        setPersons(persons.filter(peep => peep.id!== personId).concat(nameObject))
         setNewName('')
         setNewNumber('')
       }
@@ -110,9 +133,10 @@ const App = () => {
     }
 
     personService.create(nameObject)
-    .then(response => {
-      console.log(response)
-    })
+    .then( setSuccessMessage(`Added ${newName}`) ,
+    setTimeout(() => {
+      setSuccessMessage(null)
+    }, 5000))
     
     setPersons(persons.concat(nameObject))
     setNewName('')
@@ -137,7 +161,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-
+      <Notification message={successMessage} />
       < Filter newSearch={newSearch} handleSearchChange={handleSearchChange}/>
       <h2>add a new</h2>
 
