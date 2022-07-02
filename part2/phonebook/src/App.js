@@ -26,7 +26,7 @@ const PersonForm = ({addPerson,newName,handleNameChange,newNumber,handleNumberCh
   )
 }
 
-const Persons = ({persons,newSearch,toggleImportance}) => {
+const Persons = ({persons,newSearch,deleteContact}) => {
   const searchMatches = persons.filter( function(person) {
     return person.name.toLowerCase().includes(newSearch.toLowerCase())})
     return(
@@ -35,7 +35,7 @@ const Persons = ({persons,newSearch,toggleImportance}) => {
         {searchMatches.map(person => 
         <tr>
         <td><p key={person.id}> {person.name} {person.number} </p></td>
-        <td><button onClick={() => toggleImportance(person.id)}>delete</button> </td>
+        <td><button onClick={() => deleteContact(person.id)}>delete</button> </td>
         </tr>
         )}
       </table>
@@ -46,8 +46,6 @@ const Persons = ({persons,newSearch,toggleImportance}) => {
 const App = () => {
   const [persons, setPersons] = useState([]) 
   
-
-
 
   const hook = () => {
     console.log('effect')
@@ -60,7 +58,7 @@ const App = () => {
   
   useEffect(hook, [])
 
-  const toggleImportanceOf = (id) => {
+  const deleteContactOf = (id) => {
     const person_name = persons.filter(person => person.id ===id)[0].name
     if (window.confirm(`Delete ${person_name}`)) {
       console.log('object with id ' + id +'has been deleted' )
@@ -71,20 +69,40 @@ const App = () => {
       })
     }
     
-    // persons.filter(person => person.id !=id)
+   
   }
 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newSearch, setNewSearch] = useState('')
+  
 
   const addPerson = (event) => {
     event.preventDefault()
     console.log('button clicked', event.target)
     if (persons.map(person => person.name).includes(newName)){
-      alert(`${newName} is already added to phonebook`)
+      if(window.confirm(`${newName} is already added to phonebook,replace the old number
+      with a new one?`)){
+        const personId=persons.filter(person => person.name ===newName)[0].id
+        console.log('id of person tryna change:', personId)
+        
+        const nameObject ={
+          name: newName , 
+          number: newNumber,
+          id : personId
+        }
     
-  }else{
+        personService.update(personId,nameObject)
+        .then(response => {
+          console.log(response)
+        })
+        
+     
+        setPersons(persons.filter(peep => peep.id!= personId).concat(nameObject))
+        setNewName('')
+        setNewNumber('')
+      }
+  } else{
     const nameObject ={
       name: newName , 
       number: newNumber,
@@ -128,7 +146,7 @@ const App = () => {
       newNumber={newNumber} handleNumberChange={handleNumberChange} />
 
       <h2>Numbers</h2>
-      < Persons persons={persons} toggleImportance={toggleImportanceOf} newSearch={newSearch} />
+      < Persons persons={persons} deleteContact={deleteContactOf} newSearch={newSearch} />
     </div>
   )
 }
