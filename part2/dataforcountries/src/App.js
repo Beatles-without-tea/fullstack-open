@@ -1,5 +1,7 @@
 import { useState , useEffect} from 'react'
 import axios from 'axios'
+import {REACT_APP_API_KEY} from './API_KEY.js'
+
 
 const FindCountries = ({countryData,newSearchCountry,handleCountryChange}) =>{
   return(
@@ -9,7 +11,28 @@ const FindCountries = ({countryData,newSearchCountry,handleCountryChange}) =>{
   )
 }
 
-const DisplayDetails = ({match}) => {
+const DisplayDetails = ({match,REACT_APP_API_KEY}) => {
+  const [cityWeather, setCityWeather] =useState('')
+  const [cityWind, setCityWind] =useState('')
+  const [cityImage, setCityImage] =useState('')
+  const city = match.capital
+ 
+  // console.log('weather:',cityWeather.data.current.temperature)
+
+  const weatherApi=`http://api.weatherstack.com/current?access_key=${REACT_APP_API_KEY}&query=${city}`
+  const weather_hook = (weatherApi) => {
+    axios
+      .get(weatherApi)
+      .then(response => {
+        console.log('response',response)
+        setCityWeather(response.data.current.temperature)
+        setCityWind(response.data.current.wind_speed)
+        setCityImage(response.data.current.weather_icons[0])
+    })
+  }
+  useEffect(()=> weather_hook(weatherApi),[])   
+
+  
   const languages = match.languages
   return(
     <div>
@@ -21,11 +44,15 @@ const DisplayDetails = ({match}) => {
       {Object.values(languages).map(language => <li key={language}>{language}</li>)}
     </ul>
     <img src={match.flags.svg} width="300" height="250"/>
+    <h2>Weather in {match.capital}</h2>
+    <p>temperature {cityWeather} Celcius</p>
+    <img src={cityImage}/>
+    <p>wind {cityWind} m/s</p>
     </div>
   )
 }
 
-const DisplayCountrywithButton = ({matchingCountries,handleButtonPress,extraInfo}) => {
+const DisplayCountrywithButton = ({matchingCountries,handleButtonPress,extraInfo,REACT_APP_API_KEY}) => {
   // if (extraInfo[country.name.common]){
   //   < DisplayDetails match={country}/>
   // }
@@ -41,7 +68,8 @@ const DisplayCountrywithButton = ({matchingCountries,handleButtonPress,extraInfo
      <td> <button onClick={(event) =>handleButtonPress(event,country,extraInfo)}>show</button></td>
     </tr>
   </table>
-  {extraInfo[country.name.common]===true ? < DisplayDetails match={country}/>:""}
+  {extraInfo[country.name.common]===true ? < DisplayDetails match={country} REACT_APP_API_KEY={REACT_APP_API_KEY} 
+  />:""}
 
   {console.log(extraInfo)}
     </div>
@@ -49,7 +77,7 @@ const DisplayCountrywithButton = ({matchingCountries,handleButtonPress,extraInfo
   )
 }
 
-const DisplayMatches = ({countryData,newSearchCountry,handleButtonPress,extraInfo}) => {
+const DisplayMatches = ({countryData,newSearchCountry,handleButtonPress,extraInfo,REACT_APP_API_KEY}) => {
   const matchingCountries = countryData.filter( function(country){
     return country.name.common.toLowerCase().includes(newSearchCountry.toLowerCase())})
   const matchingNames=matchingCountries.map(country => country.name.common)
@@ -59,7 +87,8 @@ const DisplayMatches = ({countryData,newSearchCountry,handleButtonPress,extraInf
     )
   }else if ((matchingNames.length<=10) && (matchingNames.length>1)){
     return (
-     < DisplayCountrywithButton extraInfo={extraInfo} matchingNames={matchingNames} matchingCountries={matchingCountries} handleButtonPress={handleButtonPress}/>
+     < DisplayCountrywithButton extraInfo={extraInfo} matchingNames={matchingNames} matchingCountries={matchingCountries} handleButtonPress={handleButtonPress} 
+     REACT_APP_API_KEY={REACT_APP_API_KEY}  />
     )
   }else if (matchingNames.length==1){
     const match = matchingCountries[0]
@@ -73,6 +102,7 @@ const App = () => {
   const [newSearchCountry, setSearchCountry] = useState('')
   const [countryData ,setCountryData] = useState([])
   const [extraInfo, setExtraInfo] = useState({'placeholder':true})
+ 
 
   const hook = () => {
     console.log('effect')
@@ -85,6 +115,8 @@ const App = () => {
   }
   
   useEffect(hook, [])
+
+  
 
 
   const handleCountryChange = (event) => {
@@ -122,7 +154,8 @@ const App = () => {
     <div>
 
     <FindCountries newSearchCountry={newSearchCountry} handleCountryChange={handleCountryChange} />
-    <DisplayMatches countryData={countryData} extraInfo={extraInfo} newSearchCountry={newSearchCountry} handleButtonPress={handleButtonPress}/>
+    <DisplayMatches countryData={countryData} extraInfo={extraInfo} newSearchCountry={newSearchCountry} handleButtonPress={handleButtonPress}
+    REACT_APP_API_KEY={REACT_APP_API_KEY} />
     </div>
 
   )
