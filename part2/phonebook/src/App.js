@@ -117,7 +117,13 @@ const App = () => {
         personService.update(personId,nameObject).then( setSuccessMessage(`Added ${newName}`) ,
         setTimeout(() => {
           setSuccessMessage(null)
-        }, 5000))
+        }, 5000)).catch(error => {
+          setSuccessMessage(`Information of ${newName} was already removed from the server`)
+          setTimeout(() => {
+            setSuccessMessage(null)
+          }, 5000)
+        })
+      
         
         
      
