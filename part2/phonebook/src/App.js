@@ -26,17 +26,29 @@ const PersonForm = ({addPerson,newName,handleNameChange,newNumber,handleNumberCh
   )
 }
 
-const Persons = ({persons,newSearch}) => {
+const Persons = ({persons,newSearch,toggleImportance}) => {
   const searchMatches = persons.filter( function(person) {
     return person.name.toLowerCase().includes(newSearch.toLowerCase())})
     return(
-    searchMatches.map(person => <p key={person.id}> {person.name} {person.number} </p>)
+    <div>
+      <table>
+        {searchMatches.map(person => 
+        <tr>
+        <td><p key={person.id}> {person.name} {person.number} </p></td>
+        <td><button onClick={() => toggleImportance(person.id)}>delete</button> </td>
+        </tr>
+        )}
+      </table>
+    </div>
     )
 }
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
   
+
+
+
   const hook = () => {
     console.log('effect')
     personService.getAll()
@@ -47,6 +59,20 @@ const App = () => {
   }
   
   useEffect(hook, [])
+
+  const toggleImportanceOf = (id) => {
+    const person_name = persons.filter(person => person.id ===id)[0].name
+    if (window.confirm(`Delete ${person_name}`)) {
+      console.log('object with id ' + id +'has been deleted' )
+      personService.deleteObject(id).then(response =>
+        setPersons(persons.filter(person => person.id != id))
+      ).catch(error => {
+        console.log('failure')
+      })
+    }
+    
+    // persons.filter(person => person.id !=id)
+  }
 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
@@ -102,7 +128,7 @@ const App = () => {
       newNumber={newNumber} handleNumberChange={handleNumberChange} />
 
       <h2>Numbers</h2>
-      < Persons persons={persons} newSearch={newSearch} />
+      < Persons persons={persons} toggleImportance={toggleImportanceOf} newSearch={newSearch} />
     </div>
   )
 }

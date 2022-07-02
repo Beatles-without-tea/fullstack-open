@@ -15,4 +15,8 @@ return axios.post(baseUrl, newObject)
 //     return axios.put(`${baseUrl}/${id}`, newObject)
 //   }
 
-export default {getAll, create}
+const deleteObject = (objectToDelete) => {
+    return axios.delete(`${baseUrl}/${objectToDelete}`)
+}
+
+export default {getAll, create, deleteObject}
