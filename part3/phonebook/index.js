@@ -52,12 +52,20 @@ app.post('/api/persons',(request,response) =>{
     const name = request.body.name
     const number = request.body.number
     
-    
-    // if ((!body.name) || (!body.number)) {
-    //     return response.status(400).json({ 
-    //       error: 'content missing' 
-    //     })
-    //   }
+    const duplicatedName = persons.find(person => person.name.toLowerCase() === name.toLowerCase())
+    if (!name) {
+        return response.status(400).json({ 
+          error: 'name missing' 
+        })
+      }else if (!number) {
+        return response.status(400).json({ 
+            error: 'number missing' 
+          })
+      }else if (duplicatedName){
+        return response.status(400).json({ 
+            error: 'Duplicated name' 
+          })
+      }else{
     const person ={
         name: name,
         number: number,
@@ -66,6 +74,7 @@ app.post('/api/persons',(request,response) =>{
     
     persons = persons.concat(person)
     response.json(person)
+}
 
 })
 
