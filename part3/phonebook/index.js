@@ -6,7 +6,7 @@ const mongoose = require('mongoose')
 const {password} = require('./password.js');
 app.use(express.json())
 app.use(express.static('build'))
-console.log('myballs')
+
 const url = 
         `mongodb+srv://max:${password}@cluster0.ljsljdl.mongodb.net/?retryWrites=true&w=majority`
 mongoose.connect(url)
