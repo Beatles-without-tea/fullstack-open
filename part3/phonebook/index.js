@@ -2,8 +2,23 @@ const express = require('express')
 const app = express()
 const morgan = require('morgan')
 const cors = require('cors')
+const mongoose = require('mongoose')
+const {password} = require('./password.js');
 app.use(express.json())
 app.use(express.static('build'))
+console.log('myballs')
+const url = 
+        `mongodb+srv://max:${password}@cluster0.ljsljdl.mongodb.net/?retryWrites=true&w=majority`
+mongoose.connect(url)
+
+const personSchema = new mongoose.Schema({
+  name: String,
+  number: String,
+  id: Number
+})
+
+const Person = mongoose.model('Person', personSchema )
+
 app.use(
     morgan(function (tokens, req, res) {
         return [
@@ -18,6 +33,11 @@ app.use(
       })
 )
 app.use(cors())
+
+
+
+
+
 let persons = [
     { 
       "id": 1,
@@ -60,7 +80,10 @@ app.get('/api/persons/:id', (request, response) => {
   })
   
 app.get('/api/persons', (request, response) => {
-    response.json(persons)
+    Person.find({}).then(persons => {
+      response.json(persons)
+
+    })  
 })
 
 
