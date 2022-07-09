@@ -1,25 +1,14 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
 const morgan = require('morgan')
 const cors = require('cors')
 const mongoose = require('mongoose')
-const {password} = require('./password.js');
 app.use(express.json())
 app.use(express.static('build'))
+const Person = require('./models/person')
 
 
-
-const url = 
-        `mongodb+srv://max:${password}@cluster0.ljsljdl.mongodb.net/?retryWrites=true&w=majority`
-mongoose.connect(url)
-
-const personSchema = new mongoose.Schema({
-  name: String,
-  number: String,
-  id: Number
-})
-
-const Person = mongoose.model('Person', personSchema )
 
 app.use(
     morgan(function (tokens, req, res) {
@@ -37,49 +26,21 @@ app.use(
 app.use(cors())
 
 
-
-
-
-let persons = [
-    { 
-      "id": 1,
-      "name": "Arto Hellas", 
-      "number": "040-123456"
-    },
-    { 
-      "id": 2,
-      "name": "Ada Lovelace", 
-      "number": "39-44-5323523"
-    },
-    { 
-      "id": 3,
-      "name": "Dan Abramov", 
-      "number": "12-43-234345"
-    },
-    { 
-      "id": 4,
-      "name": "Mary Poppendieck", 
-      "number": "39-23-6423122"
-    }
-]
-
 app.get('/info', (request, response) => {
-    const numberPeople = persons.length
-    response.send(`<h1>Phonebook has info for ${numberPeople} people</h1>
-    <h1>${new Date()}</h1>`
-    )
     
+    Person.find({}).then(persons => {
+      response.send(`<h1>Phonebook has info for ${persons.length} people</h1>
+       <h1>${new Date()}</h1>`
+    )
+    })
+ 
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const person = persons.find(person => person.id === id)
-    if (person){
+  Person.findById(request.params.id).then(person => {
     response.json(person)
-    }else{
-        response.status(404).end()
-    }
   })
+})
   
 app.get('/api/persons', (request, response) => {
     Person.find({}).then(persons => {
@@ -93,42 +54,42 @@ app.post('/api/persons',(request,response) =>{
     const name = request.body.name
     const number = request.body.number
     
-    const duplicatedName = persons.find(person => person.name.toLowerCase() === name.toLowerCase())
-    if (!name) {
-        return response.status(400).json({ 
-          error: 'name missing' 
-        })
-      }else if (!number) {
-        return response.status(400).json({ 
-            error: 'number missing' 
-          })
-      }else if (duplicatedName){
-        return response.status(400).json({ 
-            error: 'Duplicated name' 
-          })
-      }else{
-    const person ={
+    //const duplicatedName = persons.find(person => person.name.toLowerCase() === name.toLowerCase())
+    // const duplicatedName = 'name'
+    // if (!name) {
+    //     return response.status(400).json({ 
+    //       error: 'name missing' 
+    //     })
+    //   }else if (!number) {
+    //     return response.status(400).json({ 
+    //         error: 'number missing' 
+    //       })
+        
+    //   }else if (duplicatedName){
+    //     return response.status(400).json({ 
+    //         error: 'Duplicated name' 
+    //       })
+    //    }else{
+    const person= new Person({
         name: name,
-        number: number,
-        id: Math.floor(Math.random() * 52343+5)
-    }
-    
-    persons = persons.concat(person)
-    response.json(person)
-}
+        number: number 
+    })
+    console.log(person)
+    person.save().then(savedPerson => {
+      response.json(savedPerson)
+    })
+  
+  })
 
+
+app.delete('/api/persons/:id', (request, response, next) => {
+  Person.findByIdAndRemove(request.params.id)
+    .then(result => {
+      response.status(204).end()
+    })
+    .catch(error => next(error))
 })
 
-app.delete('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    persons_updated = persons.filter(person => person.id !== id)
-    if (persons.length!==persons_updated.length){
-        response.status(204).end()
-        persons=persons_updated
-    }else{
-    response.status(404).end()
-    }
-  })
 
 const PORT = process.env.PORT || 3000
     app.listen(PORT, () => {
