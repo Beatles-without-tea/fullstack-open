@@ -32,8 +32,9 @@ app.get('/info', (request, response) => {
       response.send(`<h1>Phonebook has info for ${persons.length} people</h1>
        <h1>${new Date()}</h1>`
     )
-    })
- 
+    
+    }) 
+  
 })
 
 app.get('/api/persons/:id', (request, response) => {
