@@ -6,6 +6,19 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 app.use(express.json())
 app.use(express.static('build'))
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  } 
+
+  next(error)
+}
+
+app.use(errorHandler)
+
 const Person = require('./models/person')
 
 
@@ -32,22 +45,22 @@ app.get('/info', (request, response) => {
       response.send(`<h1>Phonebook has info for ${persons.length} people</h1>
        <h1>${new Date()}</h1>`
     )
-    
-    }) 
+
+    })  .catch(error => next(error))
   
 })
 
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response,next) => {
   Person.findById(request.params.id).then(person => {
     response.json(person)
-  })
+  }).catch(error => next(error))
 })
   
 app.get('/api/persons', (request, response) => {
     Person.find({}).then(persons => {
       response.json(persons)
 
-    })  
+    }) .catch(error => next(error))  
 })
 
 
@@ -78,7 +91,7 @@ app.post('/api/persons',(request,response) =>{
     console.log(person)
     person.save().then(savedPerson => {
       response.json(savedPerson)
-    })
+    }) .catch(error => next(error))
   
   })
 
@@ -96,3 +109,5 @@ const PORT = process.env.PORT || 3000
     app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
+
+
