@@ -39,7 +39,7 @@ app.use(
 app.use(cors())
 
 
-app.get('/info', (request, response) => {
+app.get('/info', (request, response,next) => {
     
     Person.find({}).then(persons => {
       response.send(`<h1>Phonebook has info for ${persons.length} people</h1>
@@ -56,7 +56,7 @@ app.get('/api/persons/:id', (request, response,next) => {
   }).catch(error => next(error))
 })
   
-app.get('/api/persons', (request, response) => {
+app.get('/api/persons', (request, response,next) => {
     Person.find({}).then(persons => {
       response.json(persons)
 
@@ -64,7 +64,7 @@ app.get('/api/persons', (request, response) => {
 })
 
 
-app.post('/api/persons',(request,response) =>{
+app.post('/api/persons',(request,response,next) =>{
     const name = request.body.name
     const number = request.body.number
     
@@ -93,6 +93,23 @@ app.post('/api/persons',(request,response) =>{
       response.json(savedPerson)
     }) .catch(error => next(error))
   
+  })
+
+
+app.put('/api/persons/:id', (request, response, next) => {
+  const name = request.body.name
+  const number = request.body.number
+  
+    const person = {
+      name :name,
+      number: number
+    }
+  
+    Person.findByIdAndUpdate(request.params.id, person, { new: true })
+      .then(updatedPerson => {
+        response.json(updatedPerson)
+      })
+      .catch(error => next(error))
   })
 
 
