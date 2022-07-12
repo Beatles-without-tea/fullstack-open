@@ -114,28 +114,25 @@ const App = () => {
           id : personId
         }
     
-        personService.update(personId,nameObject).then( setSuccessMessage(`Added ${newName}`) ,
+        personService.update(personId,nameObject).then( response => {
+          setPersons(persons.filter(peep => peep.id!== personId).concat(nameObject))
+          setSuccessMessage(`Added ${newName}`) 
         setTimeout(() => {
           setSuccessMessage(null)
-        }, 5000)).catch(error => {
+        }, 5000)}).catch(error => {
           setSuccessMessage(`Information of ${newName} was already removed from the server`)
           setTimeout(() => {
             setSuccessMessage(null)
           }, 5000)
         })
-      
         
-        
-     
-        setPersons(persons.filter(peep => peep.id!== personId).concat(nameObject))
         setNewName('')
         setNewNumber('')
       }
   } else{
     const nameObject ={
       name: newName , 
-      number: newNumber,
-      id : persons.map(person => person.id)[persons.length-1]+1
+      number: newNumber
     }
 
     personService.create(nameObject)
@@ -167,6 +164,7 @@ const App = () => {
   const handleNumberChange = (event) => {
     console.log(event.target.value)
     setNewNumber(event.target.value)
+    console.log(typeof event.target.value)
   }
 
   const handleSearchChange = (event) => {
