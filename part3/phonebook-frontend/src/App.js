@@ -139,12 +139,22 @@ const App = () => {
     }
 
     personService.create(nameObject)
-    .then( setSuccessMessage(`Added ${newName}`) ,
+    .then( response => {
+      setSuccessMessage(`Added ${newName}`) 
+      setPersons(persons.concat(nameObject))
+
     setTimeout(() => {
       setSuccessMessage(null)
-    }, 5000))
+    }, 5000)})
+
+    .catch(
+      error =>{
+      setSuccessMessage(error.response.data)
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000)
+    })
     
-    setPersons(persons.concat(nameObject))
     setNewName('')
     setNewNumber('')
   }
