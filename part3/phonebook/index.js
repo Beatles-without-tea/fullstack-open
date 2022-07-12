@@ -26,29 +26,29 @@ const Person = require('./models/person')
 
 
 app.use(
-    morgan(function (tokens, req, res) {
-        return [
-          tokens.method(req, res),
-          tokens.url(req, res),
-          tokens.status(req, res),
-          tokens.res(req, res, 'content-length'), '-',
-          tokens['response-time'](req, res), 'ms',
-          JSON.stringify(req.body)
+  morgan(function (tokens, req, res) {
+    return [
+      tokens.method(req, res),
+      tokens.url(req, res),
+      tokens.status(req, res),
+      tokens.res(req, res, 'content-length'), '-',
+      tokens['response-time'](req, res), 'ms',
+      JSON.stringify(req.body)
         
-        ].join(' ')
-      })
+    ].join(' ')
+  })
 )
 app.use(cors())
 
 
 app.get('/info', (request, response,next) => {
     
-    Person.find({}).then(persons => {
-      response.send(`<h1>Phonebook has info for ${persons.length} people</h1>
+  Person.find({}).then(persons => {
+    response.send(`<h1>Phonebook has info for ${persons.length} people</h1>
        <h1>${new Date()}</h1>`
     )
 
-    })  .catch(error => next(error))
+  })  .catch(error => next(error))
   
 })
 
@@ -59,62 +59,46 @@ app.get('/api/persons/:id', (request, response,next) => {
 })
   
 app.get('/api/persons', (request, response,next) => {
-    Person.find({}).then(persons => {
-      response.json(persons)
+  Person.find({}).then(persons => {
+    response.json(persons)
 
-    }) .catch(error => next(error))  
+  }) .catch(error => next(error))  
 })
 
 
 app.post('/api/persons',(request,response,next) =>{
-    const name = request.body.name
-    const number = request.body.number
+  const name = request.body.name
+  const number = request.body.number
     
-    //const duplicatedName = persons.find(person => person.name.toLowerCase() === name.toLowerCase())
-    // const duplicatedName = 'name'
-    // if (!name) {
-    //     return response.status(400).json({ 
-    //       error: 'name missing' 
-    //     })
-    //   }else if (!number) {
-    //     return response.status(400).json({ 
-    //         error: 'number missing' 
-    //       })
-        
-    //   }else if (duplicatedName){
-    //     return response.status(400).json({ 
-    //         error: 'Duplicated name' 
-    //       })
-    //    }else{
-    const person= new Person({
-        name: name,
-        number: number 
-    })
-    console.log(person)
-    console.log(number)
-
-    person.save().then(savedPerson => {
-      response.json(savedPerson)
-    }) .catch(error => next(error))
-  
+  const person= new Person({
+    name: name,
+    number: number 
   })
+  console.log(person)
+  console.log(number)
+
+  person.save().then(savedPerson => {
+    response.json(savedPerson)
+  }) .catch(error => next(error))
+  
+})
 
 
 app.put('/api/persons/:id', (request, response, next) => {
   const name = request.body.name
   const number = request.body.number
   
-    const person = {
-      name :name,
-      number: number
-    }
+  const person = {
+    name :name,
+    number: number
+  }
   
-    Person.findByIdAndUpdate(request.params.id, person, { new: true, runValidators: true, context: 'query' })
-      .then(updatedPerson => {
-        response.json(updatedPerson)
-      })
-      .catch(error => next(error))
-  }) 
+  Person.findByIdAndUpdate(request.params.id, person, { new: true, runValidators: true, context: 'query' })
+    .then(updatedPerson => {
+      response.json(updatedPerson)
+    })
+    .catch(error => next(error))
+}) 
   
 
 
@@ -128,8 +112,8 @@ app.delete('/api/persons/:id', (request, response, next) => {
 
 
 const PORT = process.env.PORT || 3000
-    app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
 })
 
 
