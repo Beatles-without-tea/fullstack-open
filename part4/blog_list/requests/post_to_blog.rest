@@ -2,6 +2,6 @@ POST http://localhost:3000/api/blogs HTTP/1.1
 content-type: application/json
 
 {
-    "title":"super dogman", "author":"09678978393",
-    "url" : "www.test_link.com", "likes": 10000
+    "title":"words for wisdom", "author":"john",
+    "url" : "www.test_link.com", "likes": 10
 }
