@@ -145,8 +145,52 @@ describe('favoriteBlog', () => {
     })
 })
 
+describe('mostLikes', () =>{
+    const blogs = [
+        {
+            "_id": "62cfde495c792e209c7a9d40",
+            "title": "The wonderfulworld of Superdogman",
+            "author": "phil",
+            "url": "www.idk.com",
+            "likes": 500000
+            },
+            {
+            "_id": "62cfdf62d72936fc69edd387",
+            "title": "super dogman",
+            "author": "phil",
+            "url": "www.test_link.com",
+            "likes": 10000,
+            "__v": 0
+            },
+            {
+                "_id": "62d01e6dc88f448f62f286f9",
+                "title": "super cat",
+                "author": "phil",
+                "url": "www.test_link.com",
+                "likes": 3,
+                "__v": 0
+              },
+              {
+                "_id": "62d01e86c88f448f62f286fb",
+                "title": "words for wisdom",
+                "author": "john",
+                "url": "www.test_link.com",
+                "likes": 10,
+                "__v": 0
+              }
+    ]
+    test('returns max likes', ()=>{
+        result = listHelper.mostLikes(blogs)
+        expect(result).toEqual(
+            {"author" : 'phil',
+            "likes": 510003
+        }
+        )
+    })
+})
 
-describe('' , () => {
+describe('mostBlogs' , () => {
+    
     const blogs = [
         {
             "_id": "62cfde495c792e209c7a9d40",
