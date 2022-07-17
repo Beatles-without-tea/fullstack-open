@@ -64,6 +64,20 @@ test('post method works', async () =>{
 
 })
 
+test('likes defaults to 0', async () => {
+    const responsePost = await api.post('/api/blogs')
+    .send(
+        {
+            "title":"likeless", "author":"No likes person",
+            "url" : "www.sad_no_likes.com"
+        }
+    ).expect(201).expect('Content-Type', /application\/json/)
+    const reponse = await api.get('/api/blogs')
+    const newPost = reponse.body[2]
+    expect(newPost.likes) === 0
+
+})
+
 
 afterAll(() => {
     mongoose.connection.close()
