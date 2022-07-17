@@ -78,6 +78,15 @@ test('likes defaults to 0', async () => {
 
 })
 
+test('missing data results in 400' , async() => {
+    const response = await api.post('/api/blogs')
+    .send(
+        {
+         "author":"No title person", "likes" :10
+        }
+    ).expect(400)
+})
+
 
 afterAll(() => {
     mongoose.connection.close()
