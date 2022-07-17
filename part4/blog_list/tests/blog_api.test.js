@@ -48,6 +48,22 @@ test('id exists', async() => {
     })
 })
 
+test('post method works', async () =>{
+    const response = await api.get('/api/blogs')
+    const prePostLength = response.body.length
+    const responsePost = await api.post('/api/blogs')
+    .send(
+        {
+            "title":"brand new blog", "author":"John Wick",
+            "url" : "www.the_continental.com", "likes": 1500
+        }
+    ).expect(201).expect('Content-Type', /application\/json/)
+
+    const PostPostLength = responsePost.body.length
+    expect(PostPostLength === prePostLength+1)
+
+})
+
 
 afterAll(() => {
     mongoose.connection.close()
