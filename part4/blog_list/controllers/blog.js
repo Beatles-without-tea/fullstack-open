@@ -31,6 +31,18 @@ blogRouter.post('/', async (request, response,next) => {
         next(response.status(400))
       }
     })
+  
+blogRouter.put('/:id', async (request,response,next) =>{
+  const updateBlog = await Blog.findByIdAndUpdate(request.params.id, request.body, {new:true})
+  
+  try{
+   response.status(200).json({
+    status: "updated succesfully",
+  })
+  }catch(exception){
+    next(response.status(400))
+  }
+})
 
-  module.exports = blogRouter
+module.exports = blogRouter
   

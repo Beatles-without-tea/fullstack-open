@@ -90,11 +90,17 @@ test('missing data results in 400' , async() => {
 test('test delete ID' , async() => {
     const response = await api.get('/api/blogs')
     const id = response.body[0].id
-    console.log(typeof id)
     const responseDelete = await api.delete(`/api/blogs/${id}`).expect(204)
     
 },10000)
 
+test('test put data', async() => {
+    const response = await api.get('/api/blogs')
+    const id = response.body[0].id
+    const responsePut = await api.put(`/api/blogs/${id}`).send(
+    {'title':'new title','author': 'new author','likes':5}
+    ).expect(200)
+},10000)
 
 afterAll(() => {
     mongoose.connection.close()
