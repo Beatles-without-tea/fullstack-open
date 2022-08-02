@@ -3,10 +3,10 @@ const express = require('express')
 const mongoose = require('mongoose')
 const app = express()
 const cors = require('cors')
+const usersRouter = require('./controllers/users')
 
 
 const blogsRouter = require('./controllers/blog')
-const Blog = require('./models/blog')
 const {MONGODB_URI, PORT} = require('./utils/config')
 
 
@@ -22,7 +22,7 @@ app.use(cors())
 app.use(express.json())
 
 app.use('/api/blogs', blogsRouter)
-
+app.use('/api/users', usersRouter)
 
 
 module.exports = app
