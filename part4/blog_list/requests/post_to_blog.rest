@@ -3,5 +3,5 @@ content-type: application/json
 
 {
     "title":"words for wisdom", "author":"john",
-    "url" : "www.test_link.com", "likes": 10
+    "url" : "www.test_link.com", "likes": 10,  "users": "62ea5c2f436af79fd5374ca5"
 }

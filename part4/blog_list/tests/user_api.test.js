@@ -33,7 +33,7 @@ test('users are returned as json', async () => {
     .expect('content-Type', /application\/json/)
 }, 10000)
 
-test('short username users raise error', async () => {
+test('short username users raises error', async () => {
     await api.post('/api/blogs')
     .send(
         {
