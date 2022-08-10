@@ -1,5 +1,6 @@
 POST http://localhost:3000/api/blogs HTTP/1.1
-content-type: application/json
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRhc2R0IiwiaWQiOiI2MmYzYWU0YWM1ZTFjZWExZGE0OThhNjkiLCJpYXQiOjE2NjAxNDA3OTN9.am5M1a4-royvEqsUZ-6GmAdK-aQv0FQGtAQc1moZGdQ
 
 {
     "title":"words for wisdom", "author":"john",
