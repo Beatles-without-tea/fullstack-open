@@ -5,24 +5,34 @@ const jwt = require('jsonwebtoken')
 
 
 
+
 blogRouter.get('/', async (request, response) => {
     const blogs = await Blog.find({}).populate('users')
     response.json(blogs)
   }) 
 
-blogRouter.delete('/:id', async (request, response,next) => {
-    const blogs = await Blog.findByIdAndDelete(request.params.id)
-    try{
-    response.status(204).json({
-      status: "deleted succesfully",
-    })
-  } catch(error) {
-    console.log(error.name)
-    next(error)
+blogRouter.delete('/:id', async (request, response,next) => {    
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'token missing or invalid' })
+    }
+    
+    
+    const blogs = await Blog.findById(request.params.id)
+    console.log(blogs.users.toString())
+    console.log(decodedToken.id.toString())
+    if (blogs.users.toString() === decodedToken.id.toString()){
+      console.log(request.params.id)
+      await blogs.deleteOne({_id: request.params.id} );
+      response.status(204).json({
+        status: "deleted succesfully",
+  })
+ } else {
+    response.status(401).json({'error':"unallowed"})
   }
 
   })
-  
+
 blogRouter.post('/', async (request, response,next) => {
     const decodedToken = jwt.verify(request.token, process.env.SECRET)
     if (!decodedToken.id) {
