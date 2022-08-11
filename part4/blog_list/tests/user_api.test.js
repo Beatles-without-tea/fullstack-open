@@ -4,6 +4,19 @@ const supertest = require('supertest')
 const app = require('../app')
 const api = supertest(app)
 const User = require('../models/user')
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
+
+
+const start = (async () =>{
+    const passwordHash = await bcrypt.hash("random_password", 10);
+    const user = await new User({ username: "test_user2", passwordHash }).save();
+
+    const userForToken = { username: "name", id: user.id };
+    token = jwt.sign(userForToken, process.env.SECRET);
+    return token
+})
+token = start()
 
 const initialUsers = [
     {
@@ -42,7 +55,8 @@ test('short username users raises error', async () => {
             "passwordHash": "qwertyuiop"
             }
         
-    ).expect(400)
+    ).set("Authorization", `Bearer ${token}`)
+    .expect(400)
 })
 
 test('missing passord raises error', async () => {
@@ -53,5 +67,6 @@ test('missing passord raises error', async () => {
             "name": "word2"
             }
         
-    ).expect(400)
+    ).set("Authorization", `Bearer ${token}`)
+    .expect(400)
 })
