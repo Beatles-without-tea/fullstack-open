@@ -2,8 +2,18 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import './index.css'
 
- 
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+  return (
+    <div  className='error'>
+      {message}
+    </div>
+  )
+}
 
 
 const App = () => {
@@ -127,7 +137,7 @@ const App = () => {
       return (
         <div>
         <h1>Blogs</h1>
-
+        <Notification message={errorMessage} />
         <p>{`${user.username} is logged in`}</p>
         <button onClick={handleLogout}>Log out</button>
       
