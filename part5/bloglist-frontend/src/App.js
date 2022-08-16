@@ -90,6 +90,28 @@ const App = () => {
     event.preventDefault()
     window.localStorage.removeItem('loggedBlogappUser') 
     setUser(null) }
+  
+  const deleteBlog = async(blog) => {
+    console.log(blog.blog.id)
+    console.log(blog)
+    try {
+      console.log(user.token)
+      await blogService.setToken(user.token)
+      // console.log(blog.user.token)
+      const deletion =  await blogService.remove(blog.blog.id)
+      console.log(deletion)
+      await blogService.getAll().then(blogs =>
+        setBlogs( blogs.sort(compareNums) )
+      )  
+      }catch(exception){
+        setErrorMessage('wrong')
+        setTimeout(() => {
+          setErrorMessage(null)
+          console.log('error')
+        }, 5000)
+      }
+    }
+      
 
   const updateBlog = async(blog) => {
     console.log(blog)
@@ -104,7 +126,7 @@ const App = () => {
          })
       const creation =  await blogService.update(blog.blog.id,updatedBlog)
       await blogService.getAll().then(blogs =>
-        setBlogs( blogs )
+        setBlogs( blogs.sort(compareNums) )
       )  
       }catch(exception){
         setErrorMessage('wrong')
@@ -125,7 +147,7 @@ const App = () => {
         
         }) 
         await blogService.getAll().then(blogs =>
-            setBlogs( blogs )
+            setBlogs( blogs.sort(compareNums) )
             
           ) 
         
@@ -198,6 +220,7 @@ const App = () => {
               <button onClick={() => updateBlog({blog})}   className='likeButton'>like</button>
             </div>
             <p>{blog.author}</p>
+            <button onClick={() => deleteBlog({blog})}>delete</button>
           </div>
         </Togglable>
       </div>
