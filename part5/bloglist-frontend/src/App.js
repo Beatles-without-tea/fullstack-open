@@ -18,6 +18,12 @@ const Notification = ({ message }) => {
   )
 }
 
+const DisplayBlogs = async({setBlogs}) => {
+  await blogService.getAll().then(blogs =>
+    setBlogs( blogs )
+  )  
+}
+
 
 
 const App = () => {
@@ -34,9 +40,14 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs( blogs )
+      setBlogs( blogs.sort(compareNums) )
+     
     )  
   }, [])
+  function compareNums(a,b) {
+    return a.likes - b.likes;
+  }
+
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -133,9 +144,6 @@ const App = () => {
       }
       
     }
- 
-
-
     if (user === null){ 
         return(
           <div>
