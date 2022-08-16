@@ -7,3 +7,23 @@
     padding: 10px;
     margin-bottom: 10px;
   }
+
+  .row {
+    
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap:10px;
+    
+  }
+
+  .contour{
+    border:solid;
+    border-color:black;
+    border-style: dashed solid;
+  }
+
+  .likeButton{
+    margin-top: 0.8%;
+    height:50%;
+  }

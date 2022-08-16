@@ -146,13 +146,35 @@ const App = () => {
         <button onClick={handleLogout}>Log out</button>
       
       <h1>create new</h1>
-      <Togglable buttonLabel="new blog">
+      <Togglable buttonLabel="new blog" exitLabel="cancel">
         <AddBlogForm author={author} url={url} title={title} handleNewBlog={handleNewBlog}
         setAuthor={setAuthor} setTitle={setTitle} setUrl={setUrl}/>
       </Togglable>
+ 
+
       {blogs.map(blog =>
+      <div>
+        <br></br>
+      <div className="contour">
         <Blog key={blog.id} blog={blog} />
-      )}
+        <Togglable buttonLabel="view" exitLabel="hide">
+          <div>
+            <p>{blog.url}</p>
+            <div className='row'>
+              <p>likes 0</p> 
+              <button className='likeButton'>like</button>
+            </div>
+            <p>{blog.author}</p>
+          </div>
+        </Togglable>
+      </div>
+      <br></br>
+      </div>
+      )} 
+   
+      
+      
+
         </div>
 
       )
