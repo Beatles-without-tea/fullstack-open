@@ -24,7 +24,8 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('') 
-  const [title, setTitle] = useState('') 
+  const [title, setTitle] = useState('')
+  const [likes, setLikes] = useState(0)
   const [author, setAuthor] = useState('') 
   const [url, setUrl] = useState('') 
   const [user, setUser] = useState(null)
@@ -45,6 +46,7 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
+
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -77,6 +79,29 @@ const App = () => {
     event.preventDefault()
     window.localStorage.removeItem('loggedBlogappUser') 
     setUser(null) }
+
+  const updateBlog = async(blog) => {
+    console.log(blog)
+    var updatedBlog = {title:blog.blog.title, 
+                  author:blog.blog.author, 
+                  url:blog.blog.url, 
+                  id:blog.blog.id,
+                  likes:blog.blog.likes+1}
+    try {
+      console.log({
+        updatedBlog
+         })
+      const creation =  await blogService.update(blog.blog.id,updatedBlog)
+      await blogService.getAll().then(blogs =>
+        setBlogs( blogs )
+      )  
+      }catch(exception){
+        setErrorMessage('wrong')
+        setTimeout(() => {
+          setErrorMessage(null)
+          console.log('error')
+        }, 5000)
+      }}
     
   const handleNewBlog = async(event) => {
     event.preventDefault()
@@ -85,7 +110,7 @@ const App = () => {
     if (!alreadyCreatedBlog.includes(true)){
       try {
         const creation =  await blogService.create({
-            title, author, url
+            title, author, url, likes
         
         }) 
         await blogService.getAll().then(blogs =>
@@ -161,8 +186,8 @@ const App = () => {
           <div>
             <p>{blog.url}</p>
             <div className='row'>
-              <p>likes 0</p> 
-              <button className='likeButton'>like</button>
+              <p>likes {blog.likes} </p> 
+              <button onClick={() => updateBlog({blog})}   className='likeButton'>like</button>
             </div>
             <p>{blog.author}</p>
           </div>
