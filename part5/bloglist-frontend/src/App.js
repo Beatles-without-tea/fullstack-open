@@ -208,6 +208,8 @@ const App = () => {
  
 
       {blogs.map(blog =>
+      
+
       <div>
         <br></br>
       <div className="contour">
