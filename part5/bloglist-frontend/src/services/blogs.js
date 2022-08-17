@@ -31,8 +31,8 @@ const remove = async (id) => {
   const config = {
     headers: { Authorization: token },
   }
-  if (token == null) {
-    console.log("token is currently null")
+  if (token === null) {
+    console.log('token is currently null')
   }
   const response = await axios.delete(`${baseUrl}/${id}`, config)
   return response.data
