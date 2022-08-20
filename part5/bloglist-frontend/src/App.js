@@ -2,9 +2,11 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import AddBlogForm from './components/AddBlog'
 import Togglable from './components/Toggable'
-
+import ExtraBlogDetails from './components/ExtraBlogDetails'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import { deleteBlog, updateBlog } from './functions/helperFunctions'
+
 import './index.css'
 
 const Notification = ({ message }) => {
@@ -90,52 +92,11 @@ const App = () => {
     event.preventDefault()
     window.localStorage.removeItem('loggedBlogappUser') 
     setUser(null) }
-  
-  const deleteBlog = async(blog) => {
-    console.log(blog.blog.id)
-    console.log(blog)
-    try {
-      console.log(user.token)
-      await blogService.setToken(user.token)
-      // console.log(blog.user.token)
-      const deletion =  await blogService.remove(blog.blog.id)
-      console.log(deletion)
-      await blogService.getAll().then(blogs =>
-        setBlogs( blogs.sort(compareNums) )
-      )  
-      }catch(exception){
-        setErrorMessage('wrong')
-        setTimeout(() => {
-          setErrorMessage(null)
-          console.log('error')
-        }, 5000)
-      }
-    }
-      
 
-  const updateBlog = async(blog) => {
-    console.log(blog)
-    var updatedBlog = {title:blog.blog.title, 
-                  author:blog.blog.author, 
-                  url:blog.blog.url, 
-                  id:blog.blog.id,
-                  likes:blog.blog.likes+1}
-    try {
-      console.log({
-        updatedBlog
-         })
-      const creation =  await blogService.update(blog.blog.id,updatedBlog)
-      await blogService.getAll().then(blogs =>
-        setBlogs( blogs.sort(compareNums) )
-      )  
-      }catch(exception){
-        setErrorMessage('wrong')
-        setTimeout(() => {
-          setErrorMessage(null)
-          console.log('error')
-        }, 5000)
-      }}
-    
+  
+  
+ 
+
   const handleNewBlog = async(event) => {
     event.preventDefault()
     let alreadyCreatedBlog = blogs.map(blog => title === blog.title)
@@ -206,33 +167,19 @@ const App = () => {
         setAuthor={setAuthor} setTitle={setTitle} setUrl={setUrl}/>
       </Togglable>
  
-
       {blogs.map(blog =>
-      
-
+    
       <div>
         <br></br>
       <div className="contour">
         <Blog key={blog.id} blog={blog} />
         <Togglable buttonLabel="view" exitLabel="hide">
-          <div>
-            <p>{blog.url}</p>
-            <div className='row'>
-              <p>likes {blog.likes} </p> 
-              <button onClick={() => updateBlog({blog})}   className='likeButton'>like</button>
-            </div>
-            <p>{blog.author}</p>
-            <button onClick={() => deleteBlog({blog})}>delete</button>
-          </div>
+        <ExtraBlogDetails updateBlog={() => updateBlog({blog,compareNums,setBlogs})} deleteBlog={() =>deleteBlog({blog,user,setBlogs,compareNums})} blog={blog}/>
         </Togglable>
       </div>
       <br></br>
       </div>
       )} 
-   
-      
-      
-
         </div>
 
       )
