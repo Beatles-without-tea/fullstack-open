@@ -34,6 +34,8 @@ const updateBlog = async({blog,compareNums,setBlogs}) => {
             updatedBlog
              })
           const creation =  await blogService.update(blog.id,updatedBlog)
+          console.log('success')
+          console.log(creation)
           await blogService.getAll().then(blogs =>
             setBlogs( blogs.sort(compareNums) )
           )  
